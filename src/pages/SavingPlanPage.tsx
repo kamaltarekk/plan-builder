@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import PlanDisclaimer from '@/components/saving-plan/PlanDisclaimer';
 import SavingPlanTool from '@/components/saving-plan/SavingPlanTool';
+import Logo from '@/components/ui/Logo';
 import { COPY } from '@/lib/savingPlanContent';
 
 export default function SavingPlanPage() {
@@ -12,9 +13,7 @@ export default function SavingPlanPage() {
     <main className="min-h-screen bg-sabika-cream">
       <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
         <header className="mb-8 text-center sm:mb-10">
-          <p className="mb-3 inline-block rounded-full bg-sabika-gold-light/60 px-4 py-1 text-sm font-semibold text-sabika-gold-dark">
-            {COPY.hero.eyebrow}
-          </p>
+          <Logo className="mb-4 justify-center text-3xl" />
           <h1 className="text-2xl font-extrabold leading-tight text-sabika-ink sm:text-4xl">
             {COPY.hero.headline}
           </h1>

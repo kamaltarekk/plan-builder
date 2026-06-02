@@ -12,7 +12,10 @@ export type SavingPlanEvent =
   | 'saving_plan_generated'
   | 'saving_plan_cta_clicked'
   | 'saving_plan_reset_clicked'
-  | 'saving_plan_copy_clicked';
+  | 'saving_plan_copy_clicked'
+  | 'saving_plan_pdf_download_clicked'
+  | 'saving_plan_pdf_downloaded'
+  | 'saving_plan_pdf_download_failed';
 
 const SOURCE = 'saving_plan_tool';
 

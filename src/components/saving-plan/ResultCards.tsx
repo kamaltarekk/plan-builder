@@ -1,20 +1,19 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import DownloadPlanForm from './DownloadPlanForm';
 import PlanDisclaimer from './PlanDisclaimer';
 import { SABIKA_INSTALL_URL } from '@/lib/constants';
-import {
-  COPY,
-  DURATION_LABELS,
-  GOAL_LABELS,
-} from '@/lib/savingPlanContent';
+import { COPY, DURATION_LABELS, GOAL_LABELS } from '@/lib/savingPlanContent';
 import {
   formatCurrencyEGP,
-  formatGram,
-  formatMonths,
-  formatOunce,
   formatTimestamp,
 } from '@/lib/savingPlanFormatting';
+import {
+  buildPlanSummary,
+  equivalentText,
+  goalText,
+} from '@/lib/savingPlanSummary';
 import type { MetalPrice, PlanResult } from '@/lib/savingPlanTypes';
 
 interface ResultCardsProps {
@@ -23,44 +22,6 @@ interface ResultCardsProps {
   onCtaClick: () => void;
   onEditClick: () => void;
   onCopyClick: () => void;
-}
-
-function equivalentText(result: PlanResult): string {
-  const { allocation } = result;
-  const gold = `${formatGram(result.estimatedGoldGrams)} ${COPY.units.gold}`;
-  const silver = `${formatGram(result.estimatedSilverGrams)} ${COPY.units.silver}`;
-  const ounce = formatOunce(result.estimatedSilverOz);
-
-  if (allocation.silver === 0) {
-    return `${gold} ${COPY.units.approx}`;
-  }
-  if (allocation.gold === 0) {
-    return `${silver} / ${ounce} ${COPY.units.approx}`;
-  }
-  return `${gold} + ${silver} ${COPY.units.approx}`;
-}
-
-function goalText(result: PlanResult): string {
-  const { goalProgress } = result;
-  switch (goalProgress.kind) {
-    case 'behavioral':
-    case 'metal_missing':
-      return goalProgress.message;
-    case 'months_to_goal':
-      return COPY.result.monthsToGoal(formatMonths(goalProgress.monthsToGoal));
-  }
-}
-
-function buildSummary(result: PlanResult): string {
-  const durationLabel = DURATION_LABELS[result.durationMonths];
-  return [
-    COPY.pageTitle,
-    `${COPY.result.cards.monthly}: ${formatCurrencyEGP(result.monthlySavingAmount)}`,
-    `${COPY.result.cards.total}: ${formatCurrencyEGP(result.totalContribution)} ${COPY.result.totalSuffix(durationLabel)}`,
-    `${COPY.result.cards.equivalent}: ${equivalentText(result)}`,
-    `${COPY.result.cards.goal}: ${GOAL_LABELS[result.goal]} — ${goalText(result)}`,
-    COPY.result.disclaimer,
-  ].join('\n');
 }
 
 export default function ResultCards({
@@ -83,7 +44,7 @@ export default function ResultCards({
     onCopyClick();
     if (!navigator.clipboard?.writeText) return;
     try {
-      await navigator.clipboard.writeText(buildSummary(result));
+      await navigator.clipboard.writeText(buildPlanSummary(result));
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -174,6 +135,8 @@ export default function ResultCards({
       </div>
 
       <PlanDisclaimer />
+
+      <DownloadPlanForm result={result} price={price} />
     </div>
   );
 }
